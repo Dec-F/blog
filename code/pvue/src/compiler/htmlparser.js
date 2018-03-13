@@ -1,5 +1,5 @@
 var htmlparser = require('htmlparser2')
-let root, parentQueue = []
+let root = null, parentQueue = []
 var parser = new htmlparser.Parser({
     onopentag: function (name, attribs) {
         if (!root) {
@@ -27,10 +27,8 @@ var parser = new htmlparser.Parser({
         parentQueue.pop()
     }
 }, { decodeEntities: true });
-parser.write(`<div>ddd<input type="text" v-model="msg" required max="8" v-validate:field1.group1.group2>ddddd</div>`);
 
 
-console.log(JSON.stringify(root, null, 4));
 
 
 function createASTEle(name, attribs, parent) {
@@ -48,6 +46,12 @@ function createASTText(text) {
         type: 2,
         text
     }
+}
+
+exports.parseHtml2AST = function (htmlString) {
+    root = null, parentQueue = []
+    parser.write(htmlString);
+    return root
 }
 
 
